@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html style="height: 100%; width: 100%; margin-top:-0px; margin-left: -0px;; overflow:hidden;">
+<head>
+
+    <title>iMenu</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="css/menu.css" rel="stylesheet" type="text/css">
+<link href="css/index.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" charset="utf-8" src="js/jquery-2.1.3.min.js"></script>
+	    <script type="text/javascript" charset="utf-8" src="js/fastclick.js"></script>
+	    <script type="text/javascript" charset="utf-8" src="js/index.js"></script>	
+	    <script type="text/javascript" charset="utf-8" src="js/language.js"></script>
+		<style type="text/css">
+#container #right #large_flag table {
+	text-align: right;
+}
+
+</style>
+
+<script type="text/javascript"> 
+		javascript:window.history.forward(1);
+	var items=JSON.parse(localStorage.itemlist);
+	var total=0;
+	var oldorder={};
+	if(localStorage.isold==undefined){localStorage.isold=false;};
+	function jia(obj,item_code){
+		var it=items;
+		var subtotal;
+		for(i in it){
+			if(it[i].item_code==item_code){ 
+				it[i].number=Number(it[i].number)+1;
+				localStorage.itemlist=JSON.stringify(it);
+				total=Number(total)+Number(it[i].price);
+				subtotal=changeTwoDecimal( it[i].number*it[i].price );
+
+				break;};
+		};  
+		var tem=$(obj).prev().val();
+		tem=parseFloat(tem);
+		$(obj).prev().val(Number(tem+1).toFixed(2)*100/100);
+		$(obj).parent().next().find("a.jg").text(subtotal);
+		$("#subtotal").text(changeTwoDecimal(total));
+		$("#charge10").text(changeTwoDecimal(total * 0));
+		$("#total").text(changeTwoDecimal(total * 1));
+
+
+
+	}
+	function jian(obj,item_code){
+
+		var it=items;
+		var subtotal;
+		for(var i in it){
+			if(it[i].item_code==item_code){ 
+				if(it[i].number-1 < 0){return;};
+			};
+		};
+
+		for(var i in it){
+			if(it[i].item_code==item_code){ 
+				it[i].number=Number(it[i].number)-1;
+				localStorage.itemlist=JSON.stringify(it);
+				total=Number(total)-Number(it[i].price);
+				subtotal=changeTwoDecimal( it[i].number*it[i].price );
+
+				break;};
+		};  
+		var tem=$(obj).next().val();
+		tem=parseFloat(tem);
+		$(obj).next().val(tem-1);
+		$(obj).parent().next().find("a.jg").text(subtotal);
+		$("#subtotal").text(changeTwoDecimal(total));
+		$("#charge10").text(changeTwoDecimal(total * 0));
+		$("#total").text(changeTwoDecimal(total * 1));
+
+
+
+	}
+	function tc(obj,item_code){
+
+		$("#jp1").css("z-index","998");
+		$("#jp2").css("z-index","999");
+		ooj=obj;
+		icode=item_code;
+		$("#qtyjp").val( $(obj).val() );
+		obj.blur();
+
+		nu=$(obj).val();
+	}
+	function removeitem(obj, item_code){
+		var it=items;
+		var n;
+		for(var i in it){
+			if(it[i].item_code==item_code){ 
+				n=Number(it[i].number);
+				it[i].number=0;
+				localStorage.itemlist=JSON.stringify(it);
+				total=Number(total)-Number(it[i].price)*n;
+
+				break;};
+		};  
+		$("#subtotal").text(changeTwoDecimal(total));
+		$("#charge10").text(changeTwoDecimal(total * 0));
+		$("#total").text(changeTwoDecimal(total * 1));
+		obj=$(obj).parent().prev().prev().prev();
+		$(obj).next().remove();
+		$(obj).next().remove();
+		$(obj).next().remove();
+		$(obj).next().remove();
+		$(obj).next().remove();
+		$(obj).next().remove();
+		$(obj).next().remove();
+
+	}
+function changeTwoDecimal(x) {
+    var f_x = parseFloat(x);
+    if (isNaN(f_x)) {
+        alert('function:changeTwoDecimal->parameter error');
+        return false;
+    }
+    var f_x = Math.round(x * 100) / 100;
+    var s_x = f_x.toString();
+    var pos_decimal = s_x.indexOf('.');
+    if (pos_decimal < 0) {
+        pos_decimal = s_x.length;
+        s_x += '.';
+    }
+    while (s_x.length <= pos_decimal + 2) {
+        s_x += '0';
+    }
+    return s_x;
+}
+function switchorder(){
+	if($("#orderbnt").val()=="Old Order"){
+		getoldorder();
+		localStorage.isold=true;
+	}else{
+		madeneworder();
+		localStorage.isold=false;
+	};
+}
+function oldorderpage(){
+	//isold=true;
+
+	$(".c2").empty();
+	$("#orderbnt").val("New Order");
+	$("#orderbnt").text(language[17][localStorage.languageid]);
+	$("#orderbnt").attr("class","menu_tocart2");
+
+	var nn=0;
+	var cat_name="";
+	total=0;
+	for(x in oldorder["details"]){
+		var cname="";
+		var iname="";
+		if(localStorage.languageid==0){
+			cname=oldorder["details"][x]["cat-name2"];
+			iname=oldorder["details"][x]["item-name2"];
+		}else{
+			cname=oldorder["details"][x]["cat-name"];
+			iname=oldorder["details"][x]["item-name"];
+		}
+
+
+		nn=nn+1;
+		total=total + oldorder["details"][x]["qty"] * oldorder["details"][x]["price"];
+		if(cat_name != cname){
+			cat_name=cname;
+			var htmlstr_fl="";
+			htmlstr_fl=htmlstr_fl+"<div class='col0 zt2 '>&nbsp;</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col1 zt2 bg'>&nbsp;</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col2 zt2 bg'>&nbsp;</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col3 zt2 bg'>"+cat_name+"</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col4 zt2 bg'>&nbsp;</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col5 zt2 bg'>&nbsp;</div>";
+			htmlstr_fl=htmlstr_fl+"<div class='col6 zt2 '>&nbsp;</div>";
+
+			$(".c2").append(htmlstr_fl);
+
+		}
+		var htmlstr_cx="";
+		htmlstr_cx=htmlstr_cx+"<div class='col0 zt1 '>&nbsp;</div>";
+		htmlstr_cx=htmlstr_cx+"<div class='col1 zt1 bg3'>"+nn+"</div>";
+		htmlstr_cx=htmlstr_cx+"<div class='col2 zt1 bg3'><a href='#' class='item_del' onclick=''>X</a></div>";
+		htmlstr_cx=htmlstr_cx+"<div class='col3 zt1 bg3'>"+iname+"</div>";
+		htmlstr_cx=htmlstr_cx+"<div class='col4 zt1 bg3'>&nbsp;<input id='qty'  class='qty_input' type='text' value='"+oldorder["details"][x]["qty"]+"' size='5' onclick=''>&nbsp;</div>";
+		
+		htmlstr_cx=htmlstr_cx+"<div class='col5 zt1 bg3'>"+language[16][localStorage.languageid]+"<a class='jg'>"+(oldorder["details"][x]["qty"] * oldorder["details"][x]["price"])+"</a></div>";
+		htmlstr_cx=htmlstr_cx+"<div class='col6 zt1' style='height:41px;line-height:41px;overflow:hidden;'>&nbsp;</div>";
+
+		$(".c2").append(htmlstr_cx);
+
+
+
+	}
+	for(var i=0;i<10;i++){
+			var htmlstr_cx="";
+			htmlstr_cx=htmlstr_cx+"<div class='col0 zt1 '>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col1 zt1 bg3'>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col2 zt1 bg3'>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col3 zt1 bg3'>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col4 zt1 bg3'>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col5 zt1 bg3'>&nbsp;</div>";
+			htmlstr_cx=htmlstr_cx+"<div class='col6 zt1' style='height:41px;line-height:41px;overflow:hidden;'>&nbsp;</div>";
+
+			$(".c2").append(htmlstr_cx);
+	};
+	$("#subtotal").text(changeTwoDecimal(total));
+	$("#charge10").text(changeTwoDecimal(total * 0));
+	$("#total").text(changeTwoDecimal(total * 1));
+
+
+}
+function madeneworder(){
+		//isold=false;
+
+		var nn=0;
+		var catid="";
+		var subtotal=0;
+		total=0;
+
+		$(".c2").empty();
+		$("#orderbnt").val("Old Order");
+		$("#orderbnt").text(language[18][localStorage.languageid]);
+		$("#orderbnt").attr("class","menu_tocart");
+
+		for(x in items){
+			if(items[x].number > 0){
+				nn=nn+1;
+				subtotal=items[x].number*items[x].price;
+				subtotal=changeTwoDecimal(subtotal);
+				total=changeTwoDecimal( Number(total) + Number(subtotal));
+
+
+			var cname="";
+			var iname="";
+			if(localStorage.languageid==0){
+				cname=items[x].cat_name2;
+				iname=items[x].item_name2;
+			}else{
+				cname=items[x].cat_name;
+				iname=items[x].item_name;
+			}			
+
+
+
+				if(catid != items[x].cat_id){
+					catid=items[x].cat_id;
+					var htmlstr_fl="";
+					htmlstr_fl=htmlstr_fl+"<div class='col0 zt2 '>&nbsp;</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col1 zt2 bg'>&nbsp;</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col2 zt2 bg'>&nbsp;</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col3 zt2 bg'>"+cname+"</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col4 zt2 bg'>&nbsp;</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col5 zt2 bg'>&nbsp;</div>";
+					htmlstr_fl=htmlstr_fl+"<div class='col6 zt2 '>&nbsp;</div>";
+
+					$(".c2").append(htmlstr_fl);
+				}
+
+				var htmlstr_cx="";
+				htmlstr_cx=htmlstr_cx+"<div class='col0 zt1 '>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col1 zt1 bg3'>"+nn+"</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col2 zt1 bg3'><a href='#' class='item_del' onclick='removeitem(this, \""+items[x].item_code+"\")'>X</a></div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col3 zt1 bg3'>"+iname+"</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col4 zt1 bg3'><a href='#' class='index_lang' onclick='jian(this, \""+items[x].item_code+"\")'>-</a>&nbsp;<input id='qty'  class='qty_input' type='text' value='"+items[x].number+"' size='5' onclick='tc(this, \""+items[x].item_code+"\")'>&nbsp;<a href='#' class='index_lang' onclick='jia(this, \""+items[x].item_code+"\")'>+</a></div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col5 zt1 bg3'>"+language[16][localStorage.languageid]+"<a class='jg'>"+subtotal+"</a></div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col6 zt1' style='height:41px;line-height:41px;overflow:hidden;'>&nbsp;</div>";
+
+				$(".c2").append(htmlstr_cx);
+			
+			}
+		};
+		for(var i=0;i<10;i++){
+				var htmlstr_cx="";
+				htmlstr_cx=htmlstr_cx+"<div class='col0 zt1 '>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col1 zt1 bg3'>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col2 zt1 bg3'>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col3 zt1 bg3'>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col4 zt1 bg3'>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col5 zt1 bg3'>&nbsp;</div>";
+				htmlstr_cx=htmlstr_cx+"<div class='col6 zt1' style='height:41px;line-height:41px;overflow:hidden;'>&nbsp;</div>";
+
+				$(".c2").append(htmlstr_cx);
+		};
+		$("#subtotal").text(changeTwoDecimal(total));
+		$("#charge10").text(changeTwoDecimal(total * 0));
+		$("#total").text(changeTwoDecimal(total * 1));
+	}
+		$(window).load(function(){					
+			madeneworder();
+			if(localStorage.isold=="true"){
+						switchorder();}
+			$("#goback").click(function(){	
+				window.location.assign( "floortable.html"); 		
+			});
+			
+			$("#forword").click(function(){	
+				localStorage.menulist=JSON.stringify(menus);
+				window.location.assign( "menusubmit.html"); 		
+			});
+			
+		});
+	
+	
+	
+	
+	
+	
+	
+    </script>
+<style type="text/css">
+#container #right #large_flag table {
+	text-align: right;
+}
+</style>
+</head>
+
+<body>
+
+<div id="container">
+	<div class="overlay-test2">
+	<a href="menu.html" class="item_del"><script type="text/javascript">document.write(language[13][localStorage.languageid]);</script></a>
+	  <div><script type="text/javascript">document.write(language[7][localStorage.languageid]);</script>
+</div>
+
+<div class="col0 zt1">&nbsp;</div>
+<div class="col1 zt1"><script type="text/javascript">document.write(language[8][localStorage.languageid]);</script>
+</div>
+<div class="col2 zt1"><script type="text/javascript">document.write(language[9][localStorage.languageid]);</script>
+</div>
+<div class="col3 zt1"><script type="text/javascript">document.write(language[10][localStorage.languageid]);</script>
+</div>
+<div class="col4 zt1"><script type="text/javascript">document.write(language[11][localStorage.languageid]);</script>
+</div>
+<div class="col5 zt1"><script type="text/javascript">document.write(language[12][localStorage.languageid]);</script>
+</div>
+<div class="col6 zt1">&nbsp;</div>
+
+
+<div class="c1">
+<div class="c2">
+
+
+
+
+</div>
+</div>
+
+
+
+				
+	<table cellpadding="0" cellspacing="0">
+		<tbody class="ol-footer">
+
+			  <tr>
+			<td></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sub total</td>
+
+			<td><script type="text/javascript">document.write(language[16][localStorage.languageid]);</script>
+<a id="subtotal">400.00</a></td>
+		  </tr>
+				<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Svc Charge </td>
+			<td><script type="text/javascript">document.write(language[16][localStorage.languageid]);</script>
+<a id="charge10">123</a></td>
+		  </tr>
+				<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total</span></td>
+			<td><span><script type="text/javascript">document.write(language[16][localStorage.languageid]);</script>
+<a id="total">440.00</a></span></td>
+		  </tr>
+
+		   <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td   align="center"><a href="index.html" class="menu_tocart"><script type="text/javascript">document.write(language[14][localStorage.languageid]);</script></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+			<td   align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="menu_tocart2" onclick="neworder()"><script type="text/javascript">document.write(language[15][localStorage.languageid]);</script></a>&nbsp;&nbsp;&nbsp;</td>
+
+			<td align="right"><a href="#" class="menu_tocart" onclick="switchorder()" id="orderbnt" value="Old Order">Old Order</a></td>
+		  </tr>
+
+
+		</tbody>
+	  </table>
+
+
+
+	</div> 
+</div> 
+
+        <div id="footer" Class="index_footer">
+			<table width="100%" border="0" cellspacing="2" cellpadding="2">
+				<tr>
+				<td align="left" width="20%"><a Class="index_setting" href="setting.html"><script type="text/javascript">document.write(language[5][localStorage.languageid]);</script>
+				</a> &nbsp;<a href="#" class="index_lang" onclick="localStorage.languageid=1;qh();">En</a>&nbsp;<a href="#" class="index_lang" onclick="localStorage.languageid=0;qh();">中</a></td>
+				<td align="center"><script type="text/javascript">document.write(language[3][localStorage.languageid]+" : "+localStorage.table_no);</script>
+				</td>
+				<td align="right" width="20%"><script type="text/javascript">document.write(language[6][localStorage.languageid]);</script>:</td>
+				</tr>
+			</table>
+		</div>
+
+
+<script type="text/javascript">
+
+function qh(){
+	if(localStorage.isold){
+		location.reload();
+	}else{
+		location.reload();
+	};
+
+}
+function orderstr(){
+	var str='{"order":{"shop-id":"'+localStorage.shopid+'","pos-id":"105","table-id":"'+localStorage.table_no+'","section-id":"01","order-no":" ","order-date":" ","service-charge-amount":0,"tax-amount":0,"discount-amount":0,"subtotal-amount":'+total+',"total-amount":'+total+',"user-id":"'+localStorage.userid+'"}, "details":[';
+
+	var tem="";
+	var seq=0;
+	for (var x in items )
+	{
+
+		if(items[x].number != 0){
+					seq=seq+1;
+			if (tem!=""){tem=tem+",";};
+			tem=tem+'{"item-id":"'+items[x].item_code+'","seq":'+seq+',"qty":'+items[x].number+',"price":'+items[x].price+',"total-amount":'+(items[x].price)*(items[x].number)+',"discount-able":0,"discount-amount":0,"service-charge-able":0,"service-charge-amount":0,"pay-amount":'+(items[x].price)*(items[x].number)+',"cat-id":"'+items[x].cat_id+'","desc":"'+items[x].item_name+'","desc2":"'+items[x].item_name2+'","unit":"份","take-away":0}';
+		}
+	};
+	str=str+tem+']}';
+	return str;
+}
+function getoldorder(){
+			$.getJSON(
+					localStorage.url+"getOrder?callback=?", 
+					{
+						shopId:localStorage.shopid,
+						posId:"105",
+						tableId:localStorage.table_no
+					},
+					function(json){ 
+						
+						if(json.status==1){ 
+								alert("取得定单失败:"+json.msg); 
+								return;
+							}else{
+								oldorder=json.data;
+								oldorderpage();
+
+							};
+
+
+
+					}
+			);  
+}
+
+function neworder(){
+			$.getJSON(
+					localStorage.url+"makeNewOrder?callback=?", 
+					{
+						data:orderstr()
+					},
+					function(json){ 
+						
+						if(json.status==1){ 
+								alert("提交定单失败:"+json.msg); 
+								return;
+							}else{
+								window.location.href="index.html";
+							};
+
+
+
+					}
+			);  
+
+}
+	function jp(obj,tip){
+		if(tip==1){
+			var con=document.getElementById( "qtyjp" ).value;
+			document.getElementById( "qtyjp" ).value=con+obj.innerHTML;
+		}else if(tip==2){
+			document.getElementById( "qtyjp" ).value="";
+		}else if(tip==3){
+			var con=document.getElementById( "qtyjp").value;
+			document.getElementById( "qtyjp" ).value=con.slice(0,-1);
+		}
+	}
+	function inbut(obj){
+
+				obj.blur();
+
+	}
+
+	function qr(){
+		var tmp=0;
+		tmp=parseFloat( $("#qtyjp").val());
+		if(isNaN(tmp))tmp=0;
+		$(ooj).val( tmp  );
+		var it=JSON.parse(localStorage.itemlist);
+		for(i in it){
+			if(it[i].item_code==icode){ 
+				it[i].number= tmp;
+				localStorage.itemlist=JSON.stringify(it);
+				break;};
+		};  
+
+ 		
+	
+	
+	
+		$("#jp1").css("z-index","-998");
+		$("#jp2").css("z-index","-999");	
+	}
+</script>
+
+<div id="jp1" class="overlay-test"></div>
+<div id="jp2" class="overlay-test1">
+
+	<div id="content" style=" height: float: right; text-align: left; bottom:0">
+			  <div style=" overflow: hidden;margin-left: 12%;">
+
+
+				  <table width="304" height="100%" border="0" cellspacing="2" cellpadding="2" align="center">
+				  <tr>
+					<td colspan="3"  height="50px">&nbsp;
+					
+					  </td>
+					</tr>
+					<tr>
+					  <td><button class=index_num onclick="jp(this,1)">7</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">8</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">9</button></td>
+					</tr>
+					<tr>
+					  <td><button class=index_num onclick="jp(this,1)">4</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">5</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">6</button></td>
+					</tr>
+					<tr>
+					  <td><button class=index_num onclick="jp(this,1)">1</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">2</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">3</button></td>
+					</tr>
+									<tr>
+					  <td><button class=index_num onclick="jp(this,3)"><=</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">0</button></td>
+					  <td><button class=index_num onclick="jp(this,1)">.</button></td>
+					</tr>
+					<tr>
+					  <td>&nbsp;</td>
+					  <td></td>
+					  <td></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input id='qtyjp'  class='qty_input1' type='text' value='12.4'  size='6' onfocus='inbut(this)'></td>
+					  <td><button id="button" class=index_enter onclick="qr()"><script type="text/javascript">document.write(language[4][localStorage.languageid]);</script></button></td>
+					</tr>
+					
+
+				  </table>
+
+			  </div>
+	</div>
+</div>
+
+
+
+
+
+</body></html>

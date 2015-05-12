@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>餐典</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <script type="text/javascript" charset="utf-8" src="jquery-2.1.3.min.js"></script>
+
+    
+    <script type="text/javascript"> 
+		javascript:window.history.forward(1);
+	
+		$(window).load(function(){
+			
+			menus=JSON.parse(localStorage.menulist);
+			xh=0;
+			xj=0;
+			zk=0;
+			ks=0;		
+			
+			$("#header").find("h1").text(localStorage.tableid+"号桌");
+			$("#userid").text("员工号:"+localStorage.userid);
+			$("#numberofperson").text("人数:"+localStorage.numberofperson);		
+			
+			
+			for(x in menus){
+				
+				if(menus[x].number!=0){
+					xh=xh+1;
+					xj=xj + menus[x].number * menus[x].price; 
+					
+					var newitem1=document.createElement("div");
+					var textnode1=document.createTextNode(xh);
+					newitem1.appendChild(textnode1);
+					
+					var newitem2=document.createElement("div");
+					var textnode2=document.createTextNode(menus[x].name);
+					newitem2.appendChild(textnode2);
+					
+					var newitem3=document.createElement("div");
+					var textnode3=document.createTextNode(menus[x].number);
+					newitem3.appendChild(textnode3);
+					
+					var newitem4=document.createElement("div");
+					var textnode4=document.createTextNode(menus[x].number * menus[x].price);
+					newitem4.appendChild(textnode4);
+					
+					
+					var list=document.getElementById( "left");
+					list.insertBefore(newitem1, list.lastChild);	
+					list.insertBefore(newitem2, list.lastChild);
+					list.insertBefore(newitem3, list.lastChild);
+					list.insertBefore(newitem4, list.lastChild);	
+					
+								
+				
+				
+				};	
+				
+				
+			};
+			var newitem1=document.createElement("div");
+			var textnode1=document.createTextNode("小计:");
+			newitem1.appendChild(textnode1);
+			
+			var newitem2=document.createElement("div");
+			var textnode2=document.createTextNode(" ");
+			newitem2.appendChild(textnode2);
+			
+			var newitem3=document.createElement("div");
+			var textnode3=document.createTextNode(" ");
+			newitem3.appendChild(textnode3);
+			
+			var newitem4=document.createElement("div");
+			var textnode4=document.createTextNode(xj);
+			newitem4.appendChild(textnode4);
+		
+			var list=document.getElementById( "left");
+			list.insertBefore(newitem1, list.lastChild);	
+			list.insertBefore(newitem2, list.lastChild);
+			list.insertBefore(newitem3, list.lastChild);
+			list.insertBefore(newitem4, list.lastChild);
+			var newitem1=document.createElement("div");
+			var textnode1=document.createTextNode("折扣:");
+			newitem1.appendChild(textnode1);
+			
+			var newitem2=document.createElement("div");
+			var textnode2=document.createTextNode("九折");
+			newitem2.appendChild(textnode2);
+			
+			var newitem3=document.createElement("div");
+			var textnode3=document.createTextNode("-10%");
+			newitem3.appendChild(textnode3);
+			
+			var newitem4=document.createElement("div");
+			var textnode4=document.createTextNode(xj * (-0.1));
+			newitem4.appendChild(textnode4);
+		
+			var list=document.getElementById( "left");
+			list.insertBefore(newitem1, list.lastChild);	
+			list.insertBefore(newitem2, list.lastChild);
+			list.insertBefore(newitem3, list.lastChild);
+			list.insertBefore(newitem4, list.lastChild);
+			var newitem1=document.createElement("div");
+			var textnode1=document.createTextNode("加税:");
+			newitem1.appendChild(textnode1);
+			
+			var newitem2=document.createElement("div");
+			var textnode2=document.createTextNode(" ");
+			newitem2.appendChild(textnode2);
+			
+			var newitem3=document.createElement("div");
+			var textnode3=document.createTextNode("+5%");
+			newitem3.appendChild(textnode3);
+			
+			var newitem4=document.createElement("div");
+			var textnode4=document.createTextNode(xj*0.9*1.05);
+			newitem4.appendChild(textnode4);
+		
+			var list=document.getElementById( "left");
+			list.insertBefore(newitem1, list.lastChild);	
+			list.insertBefore(newitem2, list.lastChild);
+			list.insertBefore(newitem3, list.lastChild);
+			list.insertBefore(newitem4, list.lastChild);
+			var newitem1=document.createElement("div");
+			var textnode1=document.createTextNode("总计:");
+			newitem1.appendChild(textnode1);
+			
+			var newitem2=document.createElement("div");
+			var textnode2=document.createTextNode(" ");
+			newitem2.appendChild(textnode2);
+			
+			var newitem3=document.createElement("div");
+			var textnode3=document.createTextNode(" ");
+			newitem3.appendChild(textnode3);
+			
+			var newitem4=document.createElement("div");
+			var textnode4=document.createTextNode(xj*0.9*1.05);
+			newitem4.appendChild(textnode4);
+		
+			var list=document.getElementById( "left");
+			list.insertBefore(newitem1, list.lastChild);	
+			list.insertBefore(newitem2, list.lastChild);
+			list.insertBefore(newitem3, list.lastChild);
+			list.insertBefore(newitem4, list.lastChild);
+			
+		});	
+	
+	
+	
+	
+	
+	
+		function goback() 
+		{  
+		window.location.assign( "floortable.html"); 
+		} 
+		
+		function forword() 
+		{  
+		window.location.assign( "menusubmit.html"); 
+		} 
+    </script>
+
+    <style type="text/css">
+        * {
+            margin:0px;
+            padding:0px;
+        }
+        html, body{
+            height:100%;
+            overflow: hidden;
+        }
+        #box{
+            width: 100%;
+            height: 100%;
+            padding:0 0 0 0;
+        }
+        #container {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        #container #header {
+            height: 7%;
+            width: 100%;
+            background-color: #999999;
+        }
+        #container #header h1 {
+            margin-bottom: 0;
+            color: #000;
+            font-size: 2rem;
+            text-align: center;
+        }
+        #container #left {
+            height: 93%;
+            width: 90%;
+            float: left;
+            overflow: auto;
+            overflow-y: scroll;
+        }
+
+        #container #left div {
+            height: 2.5em;
+            width: 25%;
+            float: left;
+        }
+        #container #right {
+            height: 93%;
+            width: 10%;
+            float: left;
+            overflow: auto;
+            overflow-y: scroll;
+        }
+        #container #right div {
+            height: 2.5em;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+
+        <div id="header" >
+            <h1 >?号桌</h1>
+        </div>
+
+    
+		<div  id="left">
+ 
+			<div id="userid">员工：???</div>
+            <div id="firsttime">时间：??:??</div>
+            <div ></div>
+            <div id="numberofperson">人数：?</div>
+            
+            
+            <div style="background-color:#FC0;">序列</div>
+            <div style="background-color:#FC0;">名称</div>
+            <div style="background-color:#FC0;">数量</div>
+            <div style="background-color:#FC0;">价格</div>
+            
+            
+            
+            
+<!--            
+            <div >1</div>
+            <div >干炒牛河</div>
+            <div >1</div>
+            <div >10.00</div>
+            
+            <div >2</div>
+            <div >多宝鱼</div>
+            <div >1</div>
+            <div >20.00</div>
+         
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            
+            
+
+            
+            <div >小计</div>
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            <div >30.00</div>
+            
+            <div >折扣</div>
+            <div >&nbsp;</div>
+            <div>90%</div>
+            <div >27.00</div>
+            
+            <div >税</div>
+            <div >&nbsp;</div>
+            <div >5%</div>
+            <div >25.65</div>
+            
+            <div >总计</div>
+            <div >&nbsp;</div>
+            <div >&nbsp;</div>
+            <div >25.00</div>
+            
+            <div ></div>
+            <div ></div>
+            <div ></div>
+            <div ></div>
+-->
+
+                   
+        </div>
+        
+        
+        
+        <div id="right" >
+            <div >点菜</div>
+            <div >数量</div>
+            <div >删除</div>
+            <div >印单</div>
+            <div >上菜单</div>
+            <div >折扣</div>
+            <div >离开</div>
+            <div>ENGLISH</div>
+            <div >送单</div>
+        </div>
+
+
+
+
+   	</div>
+</body>
+</html>
