@@ -22,6 +22,7 @@ public class Order {
 
 	private int cover=0;
 	private String checkNo;
+	private Timestamp checkDate;
 	public String getTranNo() {
 		return tranNo;
 	}
@@ -123,6 +124,12 @@ public class Order {
 	}
 	public void setCheckNo(String checkNo) {
 		this.checkNo = checkNo;
+	}
+	public Timestamp getCheckDate() {
+		return checkDate;
+	}
+	public void setCheckDate(Timestamp checkDate) {
+		this.checkDate = checkDate;
 	}
 	
 }

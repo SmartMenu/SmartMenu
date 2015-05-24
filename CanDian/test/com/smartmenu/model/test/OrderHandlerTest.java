@@ -11,7 +11,7 @@ public class OrderHandlerTest {
 
 	OrderHandler orderHandler=new OrderHandler();
 	String shopId="001";
-	String posId="105";
+	String posId="100";
 	String tableId="11";
 	
 	private JSONObject generateOrder(String orderNo, String checkNo){
@@ -22,7 +22,7 @@ public class OrderHandlerTest {
 		jorder.put("section-id", "01");
 		jorder.put("order-no", orderNo);
 		jorder.put("check-no", checkNo);
-		jorder.put("order-date","2015-04-26 17:19:00");
+		//jorder.put("order-date","2015-04-26 17:19:00");
 		jorder.put("service-charge-amount", 0);
 		jorder.put("tax-amount",0);
 		jorder.put("discount-amount", 0);
@@ -77,14 +77,14 @@ public class OrderHandlerTest {
 	}
 	@Test
 	public void testMakeNewOrder() {
-		JSONObject order = this.generateOrder(null,null);
-		JSONObject ret = orderHandler.makeNewOrder(order);
-		System.out.println(ret.toString());
+//		JSONObject order = this.generateOrder(null,null);
+//		JSONObject ret = orderHandler.makeNewOrder(order);
+//		System.out.println(ret.toString());
 	}
 
 	@Test
 	public void testGetOldOrder() {
-		JSONObject json = orderHandler.getOldOrder(shopId, posId, tableId);
+		JSONObject json = orderHandler.getOldOrder(shopId, tableId);
 		System.out.println(json.toString());
 	}
 

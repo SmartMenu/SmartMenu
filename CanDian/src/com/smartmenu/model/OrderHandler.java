@@ -22,18 +22,19 @@ public class OrderHandler {
 	public OrderHandler(){
 		dbOrder = new DBOrder();
 	}
+	
 	public JSONObject makeNewOrder(JSONObject data){
 		JSONObject json = new JSONObject();
 		JSONArray jaMsg = new JSONArray();
 		int status=0;
-		
+	
 		JSONObject jOrder=data.getJSONObject("order");
 		JSONArray jaDetail=data.getJSONArray("details");
 		Order order = this.parseOrder(jOrder);
 		List<OrderDetail> lsOrderDetail = this.parseDetails(jaDetail);
 		if(order==null||lsOrderDetail==null){
 			status=1;
-			jaDetail.add("LACK_OF_INFO");
+			jaMsg.add("LACK_OF_INFO");
 		}else{
 			try {
 				String result = dbOrder.addNewOrder(order, lsOrderDetail);
@@ -54,12 +55,12 @@ public class OrderHandler {
 		json.put("msg", jaMsg);
 		return json;
 	}
-	public JSONObject getOldOrder(String shopId, String posId, String tableId){
+	public JSONObject getOldOrder(String shopId, String tableId){
 		JSONObject json=new JSONObject();
 		JSONArray jaMsg=new JSONArray();
 		JSONObject jData=new JSONObject();
 		int status=0;
-		Order order=dbOrder.getExistOrder(shopId, posId, tableId);
+		Order order=dbOrder.getExistOrder(shopId, tableId);
 		if(order==null){
 			status=1;
 			jaMsg.add("NO_EXIST_ORDER");
@@ -68,7 +69,7 @@ public class OrderHandler {
 			json.put("data", jData);
 			return json;
 		}
-		OrderDetail[] orderDetails=dbOrder.getOrderDetail(shopId, posId, order.getTranNo());
+		OrderDetail[] orderDetails=dbOrder.getOrderDetail(shopId, order.getTranNo());
 		if(orderDetails==null || orderDetails.length==0){
 			status=1;
 			jaMsg.add("NO_EXIST_ORDER_DETAILS");

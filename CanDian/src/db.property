@@ -1,4 +1,4 @@
-username=sa
+username=test
 password=1234
-dbname=ispos_imenu
-dbip=59.148.230.27:1600
+dbname=imenu
+dbip=localhost:1433

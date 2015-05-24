@@ -33,11 +33,10 @@ public class GetOrder extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String shopId=request.getParameter("shopId");
-		String posId=request.getParameter("posId");
 		String tableId=request.getParameter("tableId");
 		System.out.println("/getOrder: call order handler");
 		OrderHandler handler = new OrderHandler();
-		JSONObject json = handler.getOldOrder(shopId, posId, tableId);
+		JSONObject json = handler.getOldOrder(shopId, tableId);
 		System.out.println("/getMenu: handler finished");
 		PrintWriter out = response.getWriter();
 		String callbak=request.getParameter("callback");

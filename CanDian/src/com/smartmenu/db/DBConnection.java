@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.smartmenu.common.PropertyConfig;
+import com.smartmenu.common.DBProperty;
 
 public class DBConnection {
     private static Connection conn=null;
@@ -15,7 +15,7 @@ public class DBConnection {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-    	PropertyConfig config=new PropertyConfig();
+    	DBProperty config=new DBProperty();
     	String username=config.getDBUser();
     	String password=config.getDBPassword();
     	String dbName=config.getDBName();
