@@ -1,8 +1,12 @@
-package com.smartmenu.entity;
+package com.smartmenu.menu.item;
 
 import java.math.BigDecimal;
 
-public class Item {
+import net.sf.json.JSONObject;
+
+import com.smartmenu.entity.Item;
+
+public class BasicItem {
 	private String itemId;
 	private String itemName;
 	private String itemName2;
@@ -15,11 +19,22 @@ public class Item {
 	private BigDecimal itemSetPrice;
 	private String unit;
 	
-	private int isModifier;
-	private String modifierId;
-	private String setId;
+	public BasicItem(){	
+	}
 	
-	private Category category;
+	public BasicItem(Item item){
+		itemId = item.getItemId();
+		itemName = item.getItemName();
+		itemName2 = item.getItemName2();
+		pluNo = item.getPluNo();
+		//seq = item.getSeq();
+		itemDesc = item.getItemDesc();
+		itemDesc2 = item.getItemDesc2();
+		itemPic = item.getItemPic();
+		itemPrice = item.getItemPrice();
+		itemSetPrice = item.getItemSetPrice();
+		unit = item.getUnit();
+	}
 	
 	public String getItemId() {
 		return itemId;
@@ -33,12 +48,17 @@ public class Item {
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
-	
 	public String getItemName2() {
 		return itemName2;
 	}
 	public void setItemName2(String itemName2) {
 		this.itemName2 = itemName2;
+	}
+	public String getPluNo() {
+		return pluNo;
+	}
+	public void setPluNo(String pluNo) {
+		this.pluNo = pluNo;
 	}
 	public int getSeq() {
 		return seq;
@@ -70,60 +90,27 @@ public class Item {
 	public void setItemPrice(BigDecimal itemPrice) {
 		this.itemPrice = itemPrice;
 	}
-	
 	public BigDecimal getItemSetPrice() {
 		return itemSetPrice;
 	}
 	public void setItemSetPrice(BigDecimal itemSetPrice) {
 		this.itemSetPrice = itemSetPrice;
 	}
-	public Category getCategory() {
-		return category;
-	}
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
 	public String getUnit() {
 		return unit;
 	}
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	
-	public String getPluNo() {
-		return pluNo;
+	public JSONObject toJson(){
+		JSONObject json = new JSONObject();
+		json.put("item-id", itemId);
+		json.put("item-name", itemName);
+		json.put("item_name2", itemName2);
+		json.put("plu-no", pluNo);
+		json.put("price", itemPrice);
+		json.put("item-pic", itemPic==null?" ": itemPic);
+		return json;
 	}
-	public void setPluNo(String pluNo) {
-		this.pluNo = pluNo;
-	}
-	
-	public int getIsModifier() {
-		return isModifier;
-	}
-	public void setIsModifier(int isModifier) {
-		this.isModifier = isModifier;
-	}
-	public String getModifierId() {
-		return modifierId;
-	}
-	public void setModifierId(String modifierId) {
-		this.modifierId = modifierId;
-	}
-	public String getSetId() {
-		return setId;
-	}
-	public void setSetId(String setId) {
-		this.setId = setId;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		Item item = (Item)obj;
-		if(this.itemId.equals(item.getItemId()))
-			return true;
-		else
-			return false;
-	}
-	
 	
 }

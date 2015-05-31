@@ -1,6 +1,7 @@
 package com.smartmenu.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,15 @@ import com.smartmenu.db.DBMenu;
 import com.smartmenu.entity.Item;
 import com.smartmenu.entity.ItemState;
 import com.smartmenu.entity.LookupCategory;
+import com.smartmenu.entity.LookupDetail;
+import com.smartmenu.menu.Lookup;
+import com.smartmenu.menu.item.BasicItem;
+import com.smartmenu.menu.item.SetItem;
+import com.smartmenu.menu.item.SimpleItem;
+import com.smartmenu.menu.modifier.ModifierContainer;
+import com.smartmenu.menu.modifier.ModifierDetail;
+import com.smartmenu.menu.setter.SetterContainer;
+import com.smartmenu.menu.setter.SetterDetail;
 
 public class MenuHandler {
 	private DBMenu dbMenu=null;
@@ -27,7 +37,7 @@ public class MenuHandler {
 		System.out.println(this.getClass().getName()+".getMenu(): get item info");
 		Item[] items = dbMenu.getItems(shopId);
 		System.out.println(this.getClass().getName()+".getMenu(): get lookup category info");
-		LookupCategory[] lcs = dbMenu.getLookupCategory(shopId, posId, deviceId);
+		LookupCategory[] lcs = dbMenu.getShownLookup(shopId, posId, deviceId);
 		System.out.println(this.getClass().getName()+".getMenu(): get mapping relationship between item and lookup category");
 		Map<String, List<String[]>> map = dbMenu.getLookupAndItemMapping(shopId);
 		

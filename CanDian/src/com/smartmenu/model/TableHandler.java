@@ -63,4 +63,27 @@ public class TableHandler {
 		return json;
 	}
 	
+	public JSONObject dealTableReq(String shopId){
+		String[] tables = dbTable.getTables(shopId);
+		JSONObject json = new JSONObject();
+		JSONArray jaMsg = new JSONArray();
+		JSONArray jaData = new JSONArray();
+		int status=0;
+		if(tables==null){
+			status=1;
+			jaMsg.add("NOT_EXIST");
+		}else{
+			status=0;
+		    jaMsg.add("SUCCESS");
+			StringBuffer sb = new StringBuffer();
+			for(String table: tables){
+				jaData.add(table);
+			}
+		}
+		json.put("status", status);
+		json.put("msg", jaMsg);
+		json.put("data", jaData);
+		return json;
+	}
+	
 }

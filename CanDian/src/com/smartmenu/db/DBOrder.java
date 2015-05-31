@@ -187,7 +187,8 @@ public class DBOrder{
 					", balance_amount="+order.getSubtotalAmount().toPlainString()+
 					", total_amount="+order.getTotalAmount().toPlainString()+
 					", modify_date=GETDATE(), modify_by='"+order.getUserId()+"', "
-							+ " lastorder_by='"+order.getUserId()+"'"
+							+ " lastorder_by='"+order.getUserId()+"', "
+									+ "capture_systype=1, capture_systime=GETDATE(), capture_reproc_req=1, capture_reproc_status=0 "
 					+ " where tran_no='"+order.getTranNo()+"' and shop_id='"+order.getShopId()+"' "
 					+ " and pos_id='"+order.getPosId()+"'";
 			System.out.println("Update order: " + updateSql);
@@ -198,9 +199,10 @@ public class DBOrder{
 				resultMsg="UPDATE_ORDER_FAILED";
 			}else{
 				//insert details
+			   Order newOrder = this.getOrder(order.getTranNo(), order.getCheckNo());
 			   StringBuffer detailsSql = new StringBuffer();
 			   for(OrderDetail orderDetail: lsNewOrderDetail){
-				   Map<String,String> detailProperty = this.buildOrderDetailProperty(order, orderDetail);
+				   Map<String,String> detailProperty = this.buildOrderDetailProperty(newOrder, orderDetail);
 				   String sqlTmp = this.buildInsertSql("[dbo].[sales_details]", detailProperty);
 				   detailsSql.append(sqlTmp);
 			   }
@@ -212,6 +214,10 @@ public class DBOrder{
 				   resultMsg="ADD_ORDER_DETAIL_FAILED";
 			   }else{
 				   System.out.println("update order details success.");
+				   boolean bl = this.generatePrintFile(newOrder);
+				   if(!bl){
+					   System.out.println("ERROR: print check file failed.");
+				   }
 				   conn.commit();
 				   resultMsg="SUCCESS";
 			   }
@@ -264,9 +270,9 @@ public class DBOrder{
 		map.put("create_by", "'"+order.getUserId()+"'");
 		map.put("modify_date", "GETDATE()");
 		map.put("modify_by", "'"+order.getUserId()+"'");
-		map.put("capture_systype", "0");
-		//map.put("capture_systime", "GETDATE()");
-		map.put("capture_reproc_req", "0");
+		map.put("capture_systype", "1");
+		map.put("capture_systime", "GETDATE()");
+		map.put("capture_reproc_req", "1");
 		map.put("capture_reproc_status", "0");
 		map.put("settled", "0");
 		map.put("subtype", "1");
@@ -415,10 +421,10 @@ public class DBOrder{
 		map.put("upload_status5","0");
 		//map.put("stock_flag",value);
 		map.put("rush_count","0");
-		map.put("capture_systype","0");
-		//map.put("capture_systime","GETDATE()");
-		map.put("capture_reproc_req","0");
-		map.put("capture_reproc_status","0");
+		map.put("capture_systype","1");  //for print
+		map.put("capture_systime","GETDATE()"); //for print
+		map.put("capture_reproc_req","1"); //for print
+		map.put("capture_reproc_status","0"); //for print
 		map.put(" takeaway_mode",detail.getTakeAway()+"");
 /////////////////		
 		map.put("ivoid_qty", "0");
@@ -442,7 +448,7 @@ public class DBOrder{
 		return sql;
 	}
 	//Œ¥≈–∂œ «∑Ò“—∏∂øÓ
-	private static final String orderProperty=" shop_id, pos_id, tran_type, tran_no, check_no, tran_date, table_no, section_id," +
+	private static final String orderProperty=" shop_id, pos_id, tran_type, tran_no, check_no, tran_date, check_date, table_no, section_id," +
 	                                          "svchg_amount, tax_amount,disc_amount,subtotal_amount,total_amount " ;
 	public Order getExistOrder(String shopId, String tableId){
 		String sql="select top 1 " + orderProperty +
@@ -457,8 +463,8 @@ public class DBOrder{
 			return orders[0];
 		
 	}
-	public Order getOrderByTranNo(String tranNo){
-		String sql="select " + orderProperty + " from dbo.sales_header where tran_no='"+tranNo+"'";
+	public Order getOrder(String tranNo, String checkNo){
+		String sql="select " + orderProperty + " from dbo.sales_header where tran_no='"+tranNo+"' and check_no='"+checkNo+"'";
 		System.out.println("Get Order by TranNO: " + sql);
 		Order[] orders = queryOrders(sql);
 		
@@ -481,6 +487,7 @@ public class DBOrder{
 					order.setTranNo(rs.getString("tran_no"));
 					order.setCheckNo(rs.getString("check_no"));
 					order.setTranDate(rs.getTimestamp("tran_date"));
+					order.setCheckDate(rs.getTimestamp("check_date"));
 					order.setSectionId(rs.getString("section_id"));
 					order.setSvchgAmount(rs.getBigDecimal("svchg_amount"));
 					order.setTaxAmount(rs.getBigDecimal("tax_amount"));

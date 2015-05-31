@@ -89,11 +89,11 @@ public class OrderHandlerTest {
 	}
 
 	@Test
-	public void testAppendOldOrder() {
-//		JSONObject order = this.generateOrder("00001246", "00073");
-	//System.out.println(order.toString());
-	//	JSONObject ret = orderHandler.appendOldOrder(order);
-		//System.out.println(ret.toString());
+	public void testZAppendOldOrder() {
+		JSONObject order = this.generateOrder("110000000005", "1100005");
+		System.out.println(order.toString());
+		JSONObject ret = orderHandler.appendOldOrder(order);
+		System.out.println(ret.toString());
 	}
 
 }

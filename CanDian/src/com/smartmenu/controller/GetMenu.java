@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import com.smartmenu.model.MenuHandler;
+import com.smartmenu.model.MenuHandler2;
 
 /**
  * Servlet implementation class GetMenu
@@ -41,7 +41,7 @@ public class GetMenu extends HttpServlet {
 		if(deviceId==null||!deviceId.equals("AA:EE:34:30"))
 			deviceId="AA:EE:34:30";
 		System.out.println("/getMenu: call menu handler deal the request");
-		MenuHandler handler = new MenuHandler();
+		MenuHandler2 handler = new MenuHandler2();
 		JSONObject json = handler.getMenu(shopId, posId, deviceId);
 		System.out.println("/getMenu: deal with request completed");
 		//response.setContentType("text/json; charset=UTF-8");
